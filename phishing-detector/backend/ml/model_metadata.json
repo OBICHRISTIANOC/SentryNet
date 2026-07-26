@@ -1,0 +1,68 @@
+{
+  "trained_at": "2026-07-25T12:26:05Z",
+  "n_samples": 5000,
+  "n_train": 4000,
+  "n_test": 1000,
+  "n_estimators": 200,
+  "max_depth": 12,
+  "train_time_seconds": 0.51,
+  "metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0
+  },
+  "confusion_matrix": [
+    [
+      500,
+      0
+    ],
+    [
+      0,
+      500
+    ]
+  ],
+  "feature_order": [
+    "url_length",
+    "dot_count",
+    "hyphen_count",
+    "digit_count",
+    "has_https",
+    "has_ip",
+    "has_at_symbol",
+    "has_double_slash_redirect",
+    "entropy",
+    "redirect_count",
+    "suspicious_word_count",
+    "domain_length",
+    "subdomain_count",
+    "special_char_count",
+    "has_ssl",
+    "whois_available",
+    "dns_resolves",
+    "domain_age_days",
+    "is_suspicious_tld"
+  ],
+  "feature_importances": {
+    "is_suspicious_tld": 0.2244,
+    "subdomain_count": 0.1845,
+    "dot_count": 0.1596,
+    "has_https": 0.1025,
+    "digit_count": 0.0638,
+    "domain_length": 0.0581,
+    "hyphen_count": 0.0524,
+    "has_ssl": 0.0422,
+    "has_ip": 0.0377,
+    "entropy": 0.0228,
+    "redirect_count": 0.0184,
+    "suspicious_word_count": 0.0138,
+    "url_length": 0.0076,
+    "has_at_symbol": 0.0074,
+    "special_char_count": 0.0034,
+    "domain_age_days": 0.0006,
+    "whois_available": 0.0004,
+    "dns_resolves": 0.0002,
+    "has_double_slash_redirect": 0.0
+  },
+  "source": "synthetic_generator"
+}

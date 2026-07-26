@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: sentrynet-app
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && gunicorn --bind 0.0.0.0:$PORT --workers 2 app:app
+    envVars:
+      - key: SENTRYNET_SECRET_KEY
+        generateValue: true
+      - key: SENTRYNET_ADMIN_PASSWORD
+        sync: false
+      - key: SENTRYNET_ALLOWED_ORIGIN
+        value: "*"
+      - key: SERVE_FRONTEND
+        value: "1"

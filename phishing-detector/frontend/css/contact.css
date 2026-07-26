@@ -1,0 +1,134 @@
+/* ============================================================
+   CONTACT PAGE
+   ============================================================ */
+
+.contact-hero { padding: 152px 0 100px; }
+
+.contact-head { max-width: 600px; margin-bottom: 44px; }
+.contact-head h1 { font-size: clamp(1.9rem, 3.6vw, 2.7rem); margin: 16px 0 14px; }
+.contact-head p { color: var(--text-secondary); font-size: 1.02rem; }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+/* ---- Form ---- */
+.contact-form-card { padding: 34px; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+.form-field { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+.form-field label { font-family: var(--font-mono); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  padding: 13px 15px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-soft);
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  font-family: var(--font-body);
+  resize: vertical;
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px var(--blue-glow);
+}
+.form-field input::placeholder, .form-field textarea::placeholder { color: var(--text-dim); }
+.form-field input.invalid, .form-field textarea.invalid { border-color: var(--red); box-shadow: 0 0 0 4px var(--red-glow); }
+
+.field-error { font-size: 0.78rem; color: var(--red); min-height: 1em; }
+
+.form-success {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.3);
+  color: var(--green);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.form-success svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+
+@media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
+
+/* ---- Sidebar ---- */
+.contact-side { display: flex; flex-direction: column; gap: 20px; }
+
+.contact-info-card { padding: 28px; }
+.contact-info-card h3 { font-size: 1.05rem; margin-bottom: 20px; }
+
+.info-row { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.info-row:last-of-type { margin-bottom: 0; }
+.info-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: rgba(59,130,246,0.1);
+  color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.info-icon svg { width: 18px; height: 18px; }
+.info-row strong { display: block; font-size: 0.88rem; }
+.info-row span { color: var(--text-muted); font-size: 0.86rem; }
+
+.contact-socials {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-soft);
+}
+.contact-socials > span { font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 10px; }
+
+/* ---- Map placeholder ---- */
+.map-placeholder {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.14) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle at 50% 45%, #000 0%, transparent 75%);
+}
+
+.map-pin {
+  position: relative;
+  width: 44px; height: 44px;
+  color: var(--red);
+  filter: drop-shadow(0 6px 14px rgba(239,68,68,0.5));
+  animation: float-y 3s ease-in-out infinite;
+}
+
+.map-caption {
+  position: absolute;
+  bottom: 14px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  background: rgba(7,10,18,0.7);
+  padding: 5px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) { .contact-grid { grid-template-columns: 1fr; } }

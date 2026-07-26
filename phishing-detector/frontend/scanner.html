@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>
+  // Applied before first paint to avoid a flash of the wrong theme.
+  (function () {
+    try {
+      if (localStorage.getItem('sentrynet_theme') === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    } catch (e) { /* storage unavailable (private browsing, etc) */ }
+  })();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL Scanner — SentryNet</title>
+<meta name="description" content="Paste a URL to analyse it with SentryNet's machine learning phishing detection engine.">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/scanner.css">
+</head>
+<body>
+
+<!-- ============ PAGE LOADER ============ -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-mark">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z" fill="currentColor"/></svg>
+  </div>
+  <div class="loader-ring-outer"></div>
+</div>
+
+<!-- ============ NAVBAR ============ -->
+<header class="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z" fill="currentColor"/><path d="M9.5 12l1.8 1.8L15 10" stroke="#0A0E1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand-name">Sentry<span>Net</span></span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="scanner.html" class="active">URL Scanner</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="assistant.html">AI Assistant</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="nav-cta">
+      <a href="about.html" class="btn btn-ghost btn-sm">Learn More</a>
+      <a href="scanner.html" class="btn btn-primary btn-sm">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M11 4a7 7 0 104.6 12.3l4.05 4.05a1 1 0 001.42-1.42l-4.05-4.05A7 7 0 0011 4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Scan URL
+      </a>
+    </div>
+
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark and light mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <section class="scan-hero">
+    <div class="container">
+      <div class="scan-head reveal">
+        <span class="eyebrow">URL Scanner</span>
+        <h1>Analyse a link before you trust it</h1>
+        <p>Paste any URL below. SentryNet extracts its features and runs them through the Random Forest engine to return a verdict, a confidence score, and the signals behind it.</p>
+      </div>
+
+      <!-- ============ SCANNER CARD ============ -->
+      <div class="scan-card glass reveal">
+        <label for="urlInput" class="scan-label">Website URL</label>
+
+        <div class="scan-input-row">
+          <div class="scan-input-wrap">
+            <svg class="scan-input-icon" viewBox="0 0 24 24" fill="none"><path d="M11 4a7 7 0 104.6 12.3l4.05 4.05a1 1 0 001.42-1.42l-4.05-4.05A7 7 0 0011 4z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input
+              type="text"
+              id="urlInput"
+              class="scan-input"
+              placeholder="https://example.com"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button class="scan-clear-icon" id="clearIconBtn" aria-label="Clear input" hidden>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="scan-error" id="scanError" hidden></p>
+
+        <div class="scan-actions">
+          <button class="btn btn-primary" id="analyseBtn">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M11 4a7 7 0 104.6 12.3l4.05 4.05a1 1 0 001.42-1.42l-4.05-4.05A7 7 0 0011 4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Analyse URL</span>
+          </button>
+          <button class="btn btn-ghost" id="pasteBtn">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="7" y="4" width="10" height="4" rx="1" stroke="currentColor" stroke-width="1.6"/><path d="M8 4H6a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V5a1 1 0 00-1-1h-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            Paste URL
+          </button>
+          <button class="btn btn-ghost" id="clearBtn">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m2 0v14a1 1 0 01-1 1H7a1 1 0 01-1-1V6h12z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Clear
+          </button>
+        </div>
+
+        <div class="scan-examples">
+          <span>Try:</span>
+          <button class="scan-chip-btn" data-url="https://www.wikipedia.org">wikipedia.org</button>
+          <button class="scan-chip-btn" data-url="http://secure-paypal-login-verify.tk/account">suspicious sample</button>
+          <button class="scan-chip-btn" data-url="https://accounts.google.com">accounts.google.com</button>
+        </div>
+      </div>
+
+      <!-- ============ LOADING STATE ============ -->
+      <div class="scan-loading glass" id="loadingPanel" hidden>
+        <div class="loader-ring"></div>
+        <div class="loader-copy">
+          <p class="loader-title" id="loaderTitle">Analysing URL…</p>
+          <p class="loader-step" id="loaderStep">Extracting lexical features</p>
+        </div>
+      </div>
+
+      <!-- ============ RESULTS PANEL ============ -->
+      <div class="scan-result" id="resultPanel" hidden>
+
+        <div class="print-report-header" id="printReportHeader">
+          <h1>SentryNet — Phishing Detection Report</h1>
+          <p id="printReportMeta"></p>
+        </div>
+
+        <div class="result-summary glass" id="resultSummary">
+          <div class="result-verdict">
+            <img class="result-favicon" id="resultFavicon" alt="" hidden>
+            <div class="verdict-text">
+              <span class="chip" id="resultChip">SAFE</span>
+              <h2 id="resultHeadline">This link looks safe</h2>
+              <p id="resultSub">No phishing indicators were found in the URL structure or host.</p>
+              <p class="result-target" id="resultUrl"></p>
+            </div>
+          </div>
+
+          <div class="result-actions">
+            <button class="btn btn-ghost btn-sm" id="newScanBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M11 4a7 7 0 104.6 12.3l4.05 4.05a1 1 0 001.42-1.42l-4.05-4.05A7 7 0 0011 4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Scan another URL
+            </button>
+            <button class="btn btn-ghost btn-sm" id="copyReportBtn">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="7" y="4" width="10" height="4" rx="1" stroke="currentColor" stroke-width="1.6"/><path d="M8 4H6a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V5a1 1 0 00-1-1h-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Copy report
+            </button>
+            <button class="btn btn-ghost btn-sm" id="printReportBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M6 9V3h12v6M6 18H4a1 1 0 01-1-1v-6a1 1 0 011-1h16a1 1 0 011 1v6a1 1 0 01-1 1h-2M6 14h12v7H6z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Download report (PDF)
+            </button>
+          </div>
+        </div>
+
+        <!-- ============ THREAT METER ============ -->
+        <div class="threat-meter glass">
+          <div class="meter-head">
+            <div>
+              <h3>Threat meter</h3>
+              <p>Composite risk position from the classifier's output probability.</p>
+            </div>
+            <span class="chip" id="meterLevelChip">LOW</span>
+          </div>
+
+          <div class="meter-gauge-wrap">
+            <svg viewBox="0 0 220 132" class="meter-gauge">
+              <path d="M20,120 A90,90 0 0,1 46.36,56.36" class="meter-zone zone-low"/>
+              <path d="M46.36,56.36 A90,90 0 0,1 110,30" class="meter-zone zone-medium"/>
+              <path d="M110,30 A90,90 0 0,1 173.64,56.36" class="meter-zone zone-high"/>
+              <path d="M173.64,56.36 A90,90 0 0,1 200,120" class="meter-zone zone-critical"/>
+              <g id="meterNeedle" class="meter-needle">
+                <line x1="110" y1="120" x2="110" y2="42" class="needle-line"/>
+                <circle cx="110" cy="120" r="9" class="needle-hub"/>
+              </g>
+            </svg>
+            <div class="meter-readout">
+              <strong id="meterRiskValue">0%</strong>
+              <span>risk score</span>
+            </div>
+          </div>
+
+          <div class="meter-scale">
+            <span class="scale-low">Low</span>
+            <span class="scale-medium">Medium</span>
+            <span class="scale-high">High</span>
+            <span class="scale-critical">Critical</span>
+          </div>
+        </div>
+
+        <!-- ============ STATS GRID ============ -->
+        <div class="stats-grid glass">
+          <div class="stat-tile">
+            <span class="stat-label">Status</span>
+            <strong class="stat-value" id="statStatus">Safe</strong>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-label">Threat level</span>
+            <strong class="stat-value" id="statThreatLevel">Low</strong>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-label">Risk score</span>
+            <strong class="stat-value" id="statRiskScore">0%</strong>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-label">Confidence score</span>
+            <strong class="stat-value" id="statConfidence">0%</strong>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-label">Security score</span>
+            <strong class="stat-value" id="statSecurity">0<span class="stat-unit">/100</span></strong>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-label">Response time</span>
+            <strong class="stat-value" id="statResponseTime">0<span class="stat-unit">ms</span></strong>
+          </div>
+          <div class="stat-tile stat-tile-wide">
+            <span class="stat-label">Prediction timestamp</span>
+            <strong class="stat-value stat-value-sm" id="statTimestamp">—</strong>
+          </div>
+        </div>
+
+        <!-- ============ OFFICIAL WEBSITE SUGGESTION ============ -->
+        <div class="impersonation-banner glass" id="impersonationBanner" hidden>
+          <div class="impersonation-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L14.7 3.86a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="impersonation-body">
+            <span class="chip chip-danger">Possible impersonation detected</span>
+            <p id="impersonationText">This domain closely resembles a known brand.</p>
+            <div class="impersonation-official">
+              <span>Official website</span>
+              <a href="#" target="_blank" rel="noopener noreferrer" id="impersonationLink"></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ WHY THIS WEBSITE IS RISKY ============ -->
+        <div class="risk-reasons glass" id="riskReasonsCard">
+          <h3 id="riskReasonsTitle">Why this website is risky</h3>
+          <p class="result-details-sub" id="riskReasonsSub">Specific signals that shaped this verdict — not just a label.</p>
+          <ul class="reasons-list" id="reasonsList"></ul>
+        </div>
+
+        <!-- ============ URL BREAKDOWN ============ -->
+        <div class="url-breakdown glass">
+          <h3>URL breakdown</h3>
+          <p class="result-details-sub">Each section of the address, inspected on its own.</p>
+          <div class="breakdown-list" id="breakdownList"></div>
+        </div>
+
+        <div class="result-details glass">
+          <h3>Signal breakdown</h3>
+          <p class="result-details-sub">Individual features fed into the Random Forest model for this URL.</p>
+          <div class="signal-list" id="signalList"></div>
+        </div>
+
+        <!-- ============ DEVELOPER MODE ============ -->
+        <div class="dev-mode-card glass">
+          <div class="dev-mode-head">
+            <div>
+              <h3>Developer mode</h3>
+              <p class="result-details-sub">Full technical analysis behind this prediction — every value the model saw.</p>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="devModeToggle">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 6l-2 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span id="devModeToggleLabel">Show Technical Analysis</span>
+            </button>
+          </div>
+
+          <div class="dev-mode-panel" id="devModePanel" hidden>
+            <div class="dev-grid" id="devGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ RECENT SCANS ============ -->
+      <div class="scan-history" id="historySection" hidden>
+        <h3>Recent scans</h3>
+        <div class="history-list" id="historyList"></div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="brand">
+          <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z" fill="currentColor"/></svg>
+          </span>
+          <span class="brand-name">Sentry<span>Net</span></span>
+        </a>
+        <p>A machine learning phishing detection system built as a final year project — Random Forest classification served over a REST API.</p>
+        <span class="footer-status">Detection engine online</span>
+      </div>
+
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="index.html">Home</a>
+        <a href="scanner.html">URL Scanner</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="assistant.html">AI Assistant</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Project</h4>
+        <a href="about.html">About</a>
+        <a href="about.html#dataset">Dataset &amp; Model</a>
+        <a href="about.html#api">API Docs</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <div class="footer-social">
+          <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 00-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.4 9.4 0 015 0c1.9-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.68 0 3.84-2.35 4.68-4.58 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0012 2z" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.98 1.83-2 3.77-2 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.02-3.06-1.86-3.06-1.87 0-2.16 1.45-2.16 2.96V21H9z" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="Email"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 6.5l8.5 6 8.5-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 SentryNet. Final Year Project — Machine Learning-Based Phishing Website Detection System.</span>
+      <span>Built with Flask · Random Forest · Vanilla JS</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/trusted-domains.js"></script>
+<script src="js/api.js"></script>
+<script src="js/scanner.js"></script>
+</body>
+</html>

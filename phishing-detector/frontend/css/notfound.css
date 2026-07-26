@@ -1,0 +1,47 @@
+/* ============================================================
+   404 PAGE
+   ============================================================ */
+
+.nf-main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 140px 0 80px;
+}
+
+.nf-content {
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.nf-scan-icon {
+  width: 72px; height: 72px;
+  margin: 0 auto 24px;
+  border-radius: 20px;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.25);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--red);
+  animation: float-y 4s ease-in-out infinite;
+}
+.nf-scan-icon svg { width: 34px; height: 34px; }
+
+.nf-chip { margin-bottom: 18px; }
+
+.nf-content h1 { font-size: clamp(1.7rem, 3.6vw, 2.4rem); margin-bottom: 14px; }
+.nf-content > p { color: var(--text-secondary); font-size: 1rem; margin-bottom: 32px; }
+
+.nf-fake-console {
+  text-align: left;
+  padding: 20px 24px;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  margin-bottom: 32px;
+}
+.nf-console-line { color: var(--text-secondary); line-height: 1.9; word-break: break-all; }
+.nf-dim { color: var(--text-dim); }
+.nf-url { color: var(--cyan); }
+.nf-result { margin-top: 4px; }
+
+.nf-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }

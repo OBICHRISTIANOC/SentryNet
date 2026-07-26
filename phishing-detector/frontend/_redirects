@@ -1,0 +1,3 @@
+# Netlify rewrite rule for SentryNet Flask API
+# Replace 'https://sentrynet-api.onrender.com' with your actual Render service URL after deploying to Render.
+/api/*  https://sentrynet-api.onrender.com/api/:splat  200

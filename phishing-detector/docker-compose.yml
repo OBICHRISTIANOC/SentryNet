@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  sentrynet:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sentrynet-app
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - SERVE_FRONTEND=1
+      - SENTRYNET_SECRET_KEY=production-secret-key-change-me
+      - SENTRYNET_ADMIN_PASSWORD=ChangeMe123!
+      - SENTRYNET_ALLOWED_ORIGIN=*
+    restart: unless-stopped

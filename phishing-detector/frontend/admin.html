@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>
+  (function () {
+    try {
+      if (localStorage.getItem('sentrynet_theme') === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    } catch (e) { /* storage unavailable */ }
+  })();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — SentryNet</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="loader-mark">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z" fill="currentColor"/></svg>
+  </div>
+  <div class="loader-ring-outer"></div>
+</div>
+
+<div class="admin-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z" fill="currentColor"/><path d="M9.5 12l1.8 1.8L15 10" stroke="#0A0E1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand-name">Sentry<span>Net</span></span>
+    </a>
+
+    <nav class="admin-nav" id="adminNav">
+      <button class="admin-nav-btn active" data-panel="overview">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="3" width="8" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="12" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="14" width="8" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/></svg>
+        Overview
+      </button>
+      <button class="admin-nav-btn" data-panel="users">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 8.5a3 3 0 110-5.9M21 20c0-2.8-2-5.1-4.7-5.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        Manage Users
+      </button>
+      <button class="admin-nav-btn" data-panel="history">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 109-9M3 12h5m-5 0V7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Scan History
+      </button>
+      <button class="admin-nav-btn" data-panel="domains">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18M12 3a14 14 0 010 18a14 14 0 010-18z" stroke="currentColor" stroke-width="1.7"/></svg>
+        Trusted Domains
+      </button>
+      <button class="admin-nav-btn" data-panel="model">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5m0 14h16M8 15l3-4 3 3 4-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Dataset &amp; Model
+      </button>
+      <button class="admin-nav-btn" data-panel="logs">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        System Logs
+      </button>
+      <button class="admin-nav-btn" data-panel="reports">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 17v2a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Reports
+      </button>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="admin-user-row">
+        <span class="admin-user-avatar" id="adminAvatar">A</span>
+        <div><strong id="adminUsername">admin</strong><span>Administrator</span></div>
+      </div>
+      <button class="btn btn-ghost btn-sm btn-block" id="logoutBtn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Log out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="admin-main">
+    <div class="admin-mobile-bar">
+      <button id="sidebarToggle" aria-label="Toggle menu"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      <span class="brand-name">Sentry<span style="color:var(--cyan)">Net</span> Admin</span>
+    </div>
+
+    <div class="admin-topbar">
+      <div>
+        <h1 id="topbarTitle">Overview</h1>
+        <p id="topbarSub">A snapshot of everything SentryNet has seen.</p>
+      </div>
+      <span class="admin-backend-status" id="backendStatus"><span class="dot"></span> Checking backend…</span>
+    </div>
+
+    <div class="admin-alert error" id="globalError" hidden></div>
+
+    <!-- ============ OVERVIEW ============ -->
+    <section class="admin-panel active" id="panel-overview">
+      <div class="admin-stats-grid">
+        <div class="admin-stat-card"><span class="admin-stat-label">Total scans</span><strong class="admin-stat-value" id="ovTotal">—</strong></div>
+        <div class="admin-stat-card"><span class="admin-stat-label">Safe</span><strong class="admin-stat-value" style="color:var(--green)" id="ovSafe">—</strong></div>
+        <div class="admin-stat-card"><span class="admin-stat-label">Suspicious</span><strong class="admin-stat-value" style="color:var(--orange)" id="ovSuspicious">—</strong></div>
+        <div class="admin-stat-card"><span class="admin-stat-label">Phishing</span><strong class="admin-stat-value" style="color:var(--red)" id="ovPhishing">—</strong></div>
+        <div class="admin-stat-card"><span class="admin-stat-label">Admin users</span><strong class="admin-stat-value" id="ovUsers">—</strong></div>
+        <div class="admin-stat-card"><span class="admin-stat-label">Trusted domains</span><strong class="admin-stat-value" id="ovDomains">—</strong></div>
+        <div class="admin-stat-card"><span class="admin-stat-label">Model status</span><strong class="admin-stat-value" id="ovModel" style="font-size:1.1rem">—</strong></div>
+        <div class="admin-stat-card"><span class="admin-stat-label">API</span><strong class="admin-stat-value" id="ovApi" style="font-size:1.1rem">—</strong></div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-head">
+          <div><h2>Getting started</h2><p>What each section of this panel controls.</p></div>
+        </div>
+        <ul class="about-list">
+          <li><strong>Manage Users</strong> — create or remove administrator accounts.</li>
+          <li><strong>Scan History</strong> — every URL scanned through the live API, with delete controls.</li>
+          <li><strong>Trusted Domains</strong> — the brand registry used for impersonation detection.</li>
+          <li><strong>Dataset &amp; Model</strong> — upload a labelled CSV and trigger a model retrain.</li>
+          <li><strong>System Logs</strong> — authentication events, rejected input, and errors.</li>
+          <li><strong>Reports</strong> — export the full scan history as a CSV report.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ USERS ============ -->
+    <section class="admin-panel" id="panel-users">
+      <div class="admin-card">
+        <div class="admin-card-head"><div><h2>Add administrator</h2><p>New accounts can access this entire panel.</p></div></div>
+        <form class="admin-inline-form" id="userForm">
+          <div class="form-field"><label>Username</label><input type="text" id="newUsername" required></div>
+          <div class="form-field"><label>Password</label><input type="password" id="newPassword" placeholder="min. 8 characters" required></div>
+          <button type="submit" class="btn btn-primary btn-sm">Add user</button>
+        </form>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-head"><div><h2>Administrators</h2></div></div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Username</th><th>Role</th><th>Created</th><th></th></tr></thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCAN HISTORY ============ -->
+    <section class="admin-panel" id="panel-history">
+      <div class="admin-card">
+        <div class="admin-card-head">
+          <div><h2>All scans</h2><p>Every request made to <code>/api/scan</code>.</p></div>
+          <button class="btn btn-ghost btn-sm btn-danger-ghost" id="clearHistoryBtn">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7h12z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Delete all history
+          </button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>URL</th><th>Verdict</th><th>Threat level</th><th>Risk</th><th>IP</th><th>Scanned</th><th></th></tr></thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+        <p class="admin-empty" id="historyEmpty" hidden>No scans recorded yet.</p>
+      </div>
+    </section>
+
+    <!-- ============ TRUSTED DOMAINS ============ -->
+    <section class="admin-panel" id="panel-domains">
+      <div class="admin-card">
+        <div class="admin-card-head"><div><h2>Add trusted brand</h2><p>Used to detect lookalike/typosquat domains.</p></div></div>
+        <form class="admin-inline-form" id="domainForm">
+          <div class="form-field"><label>Brand name</label><input type="text" id="dBrand" placeholder="PayPal" required></div>
+          <div class="form-field"><label>Real domain</label><input type="text" id="dDomain" placeholder="paypal.com" required></div>
+          <div class="form-field"><label>Official URL</label><input type="text" id="dOfficial" placeholder="https://www.paypal.com" required></div>
+          <div class="form-field"><label>Aliases (comma-separated)</label><input type="text" id="dAliases" placeholder="paypal"></div>
+          <button type="submit" class="btn btn-primary btn-sm">Add domain</button>
+        </form>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-head"><div><h2>Registry</h2></div></div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Brand</th><th>Domain</th><th>Official URL</th><th>Aliases</th><th></th></tr></thead>
+            <tbody id="domainsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DATASET & MODEL ============ -->
+    <section class="admin-panel" id="panel-model">
+      <div class="admin-card">
+        <div class="admin-card-head"><div><h2>Upload dataset</h2><p>CSV with <code>url</code> and <code>label</code> columns (label 1 = phishing, 0 = legitimate). Max 5MB.</p></div></div>
+        <label class="admin-dropzone" id="dropzone">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 17v2a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="dropzoneLabel">Click to choose a .csv file, or drag one here</span>
+          <input type="file" id="datasetFile" accept=".csv" style="display:none">
+        </label>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-head">
+          <div><h2>Retrain model</h2><p>Runs the full train/test pipeline and hot-reloads <code>model.pkl</code> — never happens automatically.</p></div>
+          <button class="btn btn-primary btn-sm" id="retrainBtn">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5m0 14h16M8 15l3-4 3 3 4-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Retrain now
+          </button>
+        </div>
+        <div class="form-field">
+          <label style="font-family:var(--font-mono);font-size:0.76rem;text-transform:uppercase;color:var(--text-muted)">Dataset</label>
+          <select id="datasetSelect" style="max-width:340px;padding:10px 13px;border-radius:8px;border:1px solid var(--border-soft);background:var(--bg-void);color:var(--text-primary)">
+            <option value="">Synthetic default dataset</option>
+          </select>
+        </div>
+        <div id="retrainStatus"></div>
+        <div class="admin-metrics-grid" id="metricsGrid" hidden>
+          <div class="admin-metric-tile"><strong id="mAccuracy">—</strong><span>Accuracy</span></div>
+          <div class="admin-metric-tile"><strong id="mPrecision">—</strong><span>Precision</span></div>
+          <div class="admin-metric-tile"><strong id="mRecall">—</strong><span>Recall</span></div>
+          <div class="admin-metric-tile"><strong id="mF1">—</strong><span>F1 score</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LOGS ============ -->
+    <section class="admin-panel" id="panel-logs">
+      <div class="admin-card">
+        <div class="admin-card-head"><div><h2>System &amp; security logs</h2><p>Authentication events, rejected input, rate limits, and errors.</p></div></div>
+        <div id="logsList"></div>
+        <p class="admin-empty" id="logsEmpty" hidden>No log entries yet.</p>
+      </div>
+    </section>
+
+    <!-- ============ REPORTS ============ -->
+    <section class="admin-panel" id="panel-reports">
+      <div class="admin-card">
+        <div class="admin-card-head"><div><h2>Export report</h2><p>Download the complete scan history as a CSV file.</p></div></div>
+        <button class="btn btn-primary btn-sm" id="exportReportBtn">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 17v2a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download CSV report
+        </button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/admin-auth.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

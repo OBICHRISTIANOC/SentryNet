@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>
+  // Applied before first paint to avoid a flash of the wrong theme.
+  (function () {
+    try {
+      if (localStorage.getItem('sentrynet_theme') === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    } catch (e) { /* storage unavailable (private browsing, etc) */ }
+  })();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — SentryNet</title>
+<meta name="description" content="Project overview, objectives, machine learning approach, architecture, and roadmap for SentryNet, a Random Forest-based phishing detection system.">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/about.css">
+</head>
+<body>
+
+<!-- ============ PAGE LOADER ============ -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-mark">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z" fill="currentColor"/></svg>
+  </div>
+  <div class="loader-ring-outer"></div>
+</div>
+
+<!-- ============ NAVBAR ============ -->
+<header class="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z" fill="currentColor"/><path d="M9.5 12l1.8 1.8L15 10" stroke="#0A0E1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand-name">Sentry<span>Net</span></span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="scanner.html">URL Scanner</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="assistant.html">AI Assistant</a>
+      <a href="about.html" class="active">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="nav-cta">
+      <a href="about.html" class="btn btn-ghost btn-sm">Learn More</a>
+      <a href="scanner.html" class="btn btn-primary btn-sm">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M11 4a7 7 0 104.6 12.3l4.05 4.05a1 1 0 001.42-1.42l-4.05-4.05A7 7 0 0011 4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Scan URL
+      </a>
+    </div>
+
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark and light mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    </button>
+    <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <section class="about-hero">
+    <div class="container">
+      <div class="about-head reveal">
+        <span class="eyebrow">Final Year Project</span>
+        <h1>Machine Learning-Based Phishing Website Detection System</h1>
+        <p>A production-styled cybersecurity application that classifies URLs as safe, suspicious, or phishing using a Random Forest classifier, served through a Flask REST API.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-body">
+    <div class="container about-grid">
+
+      <!-- ============ TOC ============ -->
+      <aside class="about-toc reveal">
+        <span class="toc-label">On this page</span>
+        <nav id="tocNav">
+          <a href="#overview" class="active">Project overview</a>
+          <a href="#objectives">Objectives</a>
+          <a href="#motivation">Research motivation</a>
+          <a href="#dataset">Machine learning algorithm</a>
+          <a href="#stack">Technology stack</a>
+          <a href="#api">System architecture</a>
+          <a href="#benefits">Benefits</a>
+          <a href="#limitations">Limitations</a>
+          <a href="#future">Future improvements</a>
+        </nav>
+      </aside>
+
+      <!-- ============ CONTENT ============ -->
+      <div class="about-content">
+
+        <article id="overview" class="about-section reveal">
+          <h2>Project overview</h2>
+          <p>SentryNet analyses a submitted URL and returns a verdict — safe, suspicious, or phishing — in under a second. Rather than relying on static blocklists, which fail against newly-registered domains, the system extracts a feature vector from the URL's structure and host, and classifies it with a trained Random Forest model.</p>
+          <p>The result isn't just a label. Every scan returns a confidence score, a full breakdown of which features drove the decision, a human-readable explanation of the risk, and — where relevant — the likely brand being impersonated along with a link to the real site.</p>
+        </article>
+
+        <article id="objectives" class="about-section reveal">
+          <h2>Objectives</h2>
+          <ul class="about-list">
+            <li>Design and train a supervised machine learning model capable of distinguishing phishing URLs from legitimate ones using lexical and host-based features.</li>
+            <li>Build a REST API that serves predictions with low latency, decoupled from the frontend.</li>
+            <li>Present results transparently — showing the reasoning behind a verdict rather than a single opaque label.</li>
+            <li>Detect brand impersonation using string-similarity matching against a trusted domain registry.</li>
+            <li>Provide analytics over scan history so patterns in threat volume become visible over time.</li>
+            <li>Package the whole system with professional UX and code structure suitable for real-world extension, not just a classroom demo.</li>
+          </ul>
+        </article>
+
+        <article id="motivation" class="about-section reveal">
+          <h2>Research motivation</h2>
+          <p>Phishing remains one of the most common initial access vectors in reported security incidents, precisely because it targets people rather than infrastructure. Blocklist-based defences are reactive by design — a domain has to be reported and confirmed malicious before it's blocked, by which point a campaign has often already succeeded.</p>
+          <p>Machine learning approaches instead generalise from the structural properties of known phishing URLs — how they're built, not just which specific ones have been seen before. That makes it possible, in principle, to flag a phishing domain the moment it's registered, without waiting for a human report.</p>
+        </article>
+
+        <article id="dataset" class="about-section reveal">
+          <h2>Machine learning algorithm</h2>
+          <p>The classifier is a <strong>Random Forest</strong> — an ensemble of decision trees, each trained on a bootstrapped sample of the training data and a random subset of features. Predictions are made by majority vote across all trees, which reduces the overfitting risk of any single tree and tends to generalise well on structured, tabular feature sets like this one.</p>
+          <p>Random Forest was chosen over deep learning approaches for a few practical reasons:</p>
+          <ul class="about-list">
+            <li>The feature set is tabular and hand-engineered, not raw sequence or image data — the setting Random Forest is strongest in.</li>
+            <li>It trains quickly and doesn't require a GPU, which matters for a project meant to be reproducible on ordinary hardware.</li>
+            <li>Feature importance is directly interpretable, which supports the project's goal of explaining every verdict rather than hiding it behind a black box.</li>
+          </ul>
+          <p>Training data combines lexical features (URL length, character entropy, hyphen and digit counts, special characters), structural features (subdomain depth, presence of an IP address host, non-standard ports), and host-based features (HTTPS/TLS status, WHOIS and DNS signals) drawn from labelled phishing and legitimate URL datasets.</p>
+        </article>
+
+        <article id="stack" class="about-section reveal">
+          <h2>Technology stack</h2>
+          <div class="stack-grid">
+            <div class="stack-card">
+              <span class="stack-tag">Frontend</span>
+              <p>HTML5, CSS3, Vanilla JavaScript — no frameworks. Hand-rolled SVG charts and gauges, glassmorphism UI.</p>
+            </div>
+            <div class="stack-card">
+              <span class="stack-tag">Backend</span>
+              <p>Python 3 with Flask, exposing a versioned REST API for scan requests and health checks.</p>
+            </div>
+            <div class="stack-card">
+              <span class="stack-tag">Machine learning</span>
+              <p>scikit-learn's <code>RandomForestClassifier</code>, with pandas and NumPy for feature engineering and preprocessing.</p>
+            </div>
+            <div class="stack-card">
+              <span class="stack-tag">Data &amp; storage</span>
+              <p>CSV-based training dataset for the model; browser <code>localStorage</code> for client-side scan history in this build.</p>
+            </div>
+          </div>
+        </article>
+
+        <article id="api" class="about-section reveal">
+          <h2>System architecture</h2>
+          <p>The frontend and backend are fully decoupled and communicate only over HTTP via a documented REST contract — the frontend never depends on backend internals.</p>
+
+          <div class="arch-diagram">
+            <div class="arch-node">
+              <span class="arch-icon">🖥</span>
+              <strong>Frontend</strong>
+              <span>HTML / CSS / JS</span>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+              <span class="arch-icon">🔗</span>
+              <strong>REST API</strong>
+              <span>POST /api/scan</span>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+              <span class="arch-icon">🐍</span>
+              <strong>Flask backend</strong>
+              <span>Feature extraction</span>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+              <span class="arch-icon">🌲</span>
+              <strong>Random Forest</strong>
+              <span>Trained model</span>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+              <span class="arch-icon">📊</span>
+              <strong>JSON verdict</strong>
+              <span>Rendered in UI</span>
+            </div>
+          </div>
+
+          <p class="about-note">Until the backend is deployed, the frontend runs against a local heuristic scorer with an identical response shape, so the UI is fully demoable standalone — see <code>frontend/js/api.js</code>.</p>
+        </article>
+
+        <article id="benefits" class="about-section reveal">
+          <h2>Benefits</h2>
+          <ul class="about-list list-positive">
+            <li>Can flag newly-registered phishing domains that blocklists haven't caught up to yet.</li>
+            <li>Explains every verdict with feature-level reasoning instead of a single opaque label.</li>
+            <li>Catches brand impersonation attempts through string-similarity matching, not just keyword rules.</li>
+            <li>Lightweight enough to run inference in well under a second, suitable for real-time use.</li>
+            <li>Clean REST contract makes the detection engine reusable outside this specific frontend — browser extensions, Slack bots, or other tools.</li>
+          </ul>
+        </article>
+
+        <article id="limitations" class="about-section reveal">
+          <h2>Limitations</h2>
+          <ul class="about-list list-negative">
+            <li>Model quality is bounded by training data — it can underperform on phishing patterns not represented in the dataset.</li>
+            <li>URL-based features alone can't catch phishing delivered through means other than a link (e.g. malicious attachments).</li>
+            <li>WHOIS and DNS lookups require live network access and third-party services in production, introducing latency and rate limits.</li>
+            <li>Sophisticated attackers can adapt URL structure specifically to evade known feature patterns.</li>
+            <li>The trusted-brand registry used for impersonation detection needs ongoing maintenance to stay current.</li>
+          </ul>
+        </article>
+
+        <article id="future" class="about-section reveal">
+          <h2>Future improvements</h2>
+          <ul class="about-list">
+            <li>Incorporate live page content analysis (DOM structure, form targets) in addition to URL-only features.</li>
+            <li>Add a browser extension for inline link checking before a user clicks.</li>
+            <li>Expand the trusted-brand registry and automate its maintenance from a curated threat-intel feed.</li>
+            <li>Support model retraining from user-submitted feedback on false positives/negatives.</li>
+            <li>Add authenticated multi-user accounts with server-side scan history instead of local-only storage.</li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="brand">
+          <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z" fill="currentColor"/></svg>
+          </span>
+          <span class="brand-name">Sentry<span>Net</span></span>
+        </a>
+        <p>A machine learning phishing detection system built as a final year project — Random Forest classification served over a REST API.</p>
+        <span class="footer-status">Detection engine online</span>
+      </div>
+
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="index.html">Home</a>
+        <a href="scanner.html">URL Scanner</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="assistant.html">AI Assistant</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Project</h4>
+        <a href="about.html">About</a>
+        <a href="about.html#dataset">Dataset &amp; Model</a>
+        <a href="about.html#api">API Docs</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <div class="footer-social">
+          <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 00-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.4 9.4 0 015 0c1.9-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.68 0 3.84-2.35 4.68-4.58 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0012 2z" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.98 1.83-2 3.77-2 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.02-3.06-1.86-3.06-1.87 0-2.16 1.45-2.16 2.96V21H9z" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="Email"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 6.5l8.5 6 8.5-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 SentryNet. Final Year Project — Machine Learning-Based Phishing Website Detection System.</span>
+      <span>Built with Flask · Random Forest · Vanilla JS</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/about.js"></script>
+</body>
+</html>
